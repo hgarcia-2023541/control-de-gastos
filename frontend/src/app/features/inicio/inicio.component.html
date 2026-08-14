@@ -1,0 +1,18 @@
+<div class="inicio-pagina">
+  <div class="inicio-tarjeta">
+    <span class="inicio-badge" [class.inicio-badge--admin]="usuario?.rol === 'admin'">
+      {{ usuario?.rol === "admin" ? "Administrador" : "Usuario normal" }}
+    </span>
+
+    <h1>Bienvenido, {{ usuario?.nombre }}</h1>
+    <p class="inicio-correo">{{ usuario?.correo }}</p>
+
+    <p class="inicio-texto">
+      Iniciaste sesión correctamente con un token JWT válido. Desde aquí se
+      irán construyendo las pantallas del módulo de gastos en las próximas
+      semanas.
+    </p>
+
+    <button type="button" (click)="cerrarSesion()">Cerrar sesión</button>
+  </div>
+</div>

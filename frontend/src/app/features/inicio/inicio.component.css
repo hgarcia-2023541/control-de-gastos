@@ -1,0 +1,70 @@
+.inicio-pagina {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f4f3f0;
+  padding: 24px;
+}
+
+.inicio-tarjeta {
+  width: 100%;
+  max-width: 440px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 36px 32px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.inicio-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #e7f2ee;
+  color: #0f6e56;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.inicio-badge--admin {
+  background: #fdeee3;
+  color: #a3521a;
+}
+
+.inicio-tarjeta h1 {
+  font-size: 1.3rem;
+  color: #1c1c1a;
+  margin: 0 0 4px;
+}
+
+.inicio-correo {
+  font-size: 0.85rem;
+  color: #8a8880;
+  margin: 0 0 18px;
+}
+
+.inicio-texto {
+  font-size: 0.9rem;
+  color: #55534d;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+button {
+  padding: 11px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #1c1c1a;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #33322f;
+}
