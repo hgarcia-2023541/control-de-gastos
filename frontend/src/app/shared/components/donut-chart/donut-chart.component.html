@@ -1,0 +1,41 @@
+<svg
+  class="donut-chart"
+  viewBox="0 0 140 140"
+  role="img"
+  aria-label="Gastos por categoría"
+>
+  <g transform="translate(70,70) rotate(-90)">
+    <circle
+      *ngFor="let s of segmentos()"
+      r="60"
+      cx="0"
+      cy="0"
+      fill="none"
+      [attr.stroke]="s.categoria.color"
+      [attr.stroke-width]="grosor"
+      [attr.stroke-dasharray]="s.dashArray"
+      [attr.stroke-dashoffset]="s.dashOffset"
+    ></circle>
+  </g>
+
+  <!-- Los porcentajes van FUERA del grupo rotado de arriba, para que
+       el texto se vea derecho en vez de girado de lado. -->
+  <text
+    *ngFor="let e of etiquetas()"
+    [attr.x]="e.x"
+    [attr.y]="e.y"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    [attr.fill]="e.color"
+    class="donut-porcentaje"
+  >{{ e.texto }}</text>
+</svg>
+
+<div class="donut-leyenda">
+  <div class="donut-leyenda__item" *ngFor="let s of segmentos()">
+    <span class="donut-leyenda__punto" [style.background]="s.categoria.color"></span>
+    <span class="donut-leyenda__texto">
+      {{ s.categoria.nombre }} <strong>{{ s.categoria.porcentaje }}%</strong>
+    </span>
+  </div>
+</div>

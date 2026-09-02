@@ -1,0 +1,44 @@
+.donut-chart {
+  width: 150px;
+  height: 150px;
+  display: block;
+  margin: 0 auto;
+}
+
+.donut-chart circle {
+  transition: stroke-width 0.2s ease;
+}
+
+.donut-porcentaje {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.donut-leyenda {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 14px;
+  margin-top: 12px;
+}
+
+.donut-leyenda__item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--text-medium);
+}
+
+.donut-leyenda__punto {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.donut-leyenda__texto strong {
+  color: var(--text-dark);
+  font-weight: 600;
+}
