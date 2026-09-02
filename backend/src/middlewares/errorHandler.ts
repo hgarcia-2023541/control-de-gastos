@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { ZodError } from "zod";
 
 // Clase de error personalizada: permite lanzar errores con un código
 // HTTP específico desde cualquier controlador o servicio.
@@ -27,6 +28,16 @@ export function errorHandler(
     return res.status(err.statusCode).json({
       ok: false,
       mensaje: err.message,
+    });
+  }
+
+  // Errores de validación de zod (ej. schema.parse(req.body) con datos
+  // inválidos): se devuelven como 400 con un mensaje claro, en vez de
+  // caer al 500 genérico de abajo.
+  if (err instanceof ZodError) {
+    return res.status(400).json({
+      ok: false,
+      mensaje: err.issues[0]?.message ?? "Datos inválidos",
     });
   }
 
