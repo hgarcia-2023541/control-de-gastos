@@ -1,15 +1,31 @@
 <div class="login-pagina">
+  <app-financial-background />
   <div class="login-tarjeta">
     <div class="login-marca">
-      <span class="login-marca__icono">Q</span>
+      <img
+          src="/logo.svg"
+          alt="Logo Control de Gastos"
+          class="logo"
+      />
+
       <div>
         <h1>Control de Gastos</h1>
-        <p>Ingresa con tu cuenta para continuar</p>
+        <p>Ingrese con su cuenta para continuar</p>
       </div>
     </div>
 
-    <!-- [formGroup]: conecta el <form> con el FormGroup del componente -->
-    <!-- (ngSubmit): se dispara al enviar el formulario (botón submit o Enter) -->
+    <div class="mensaje-expiracion" *ngIf="mensajeExpiracion">
+      <span class="mensaje-expiracion__icono">⏰</span>
+      <span class="mensaje-expiracion__texto">{{ mensajeExpiracion }}</span>
+      <button
+        type="button"
+        class="mensaje-expiracion__btn"
+        (click)="aceptarMensajeExpiracion()"
+      >
+        Aceptar
+      </button>
+    </div>
+
     <form [formGroup]="formulario" (ngSubmit)="enviar()" class="login-form">
       <div class="campo">
         <label for="correo">Correo</label>
@@ -17,11 +33,11 @@
           id="correo"
           type="email"
           formControlName="correo"
-          placeholder="tucorreo@ejemplo.com"
+          placeholder="sucorreo@ejemplo.com"
           autocomplete="username"
         />
         <small class="error" *ngIf="correo.invalid && correo.touched">
-          Ingresa un correo válido
+          Ingrese un correo válido
         </small>
       </div>
 
@@ -44,12 +60,10 @@
       <button type="submit" [disabled]="cargando">
         {{ cargando ? "Ingresando..." : "Ingresar" }}
       </button>
-    </form>
 
-    <div class="login-ayuda">
-      <p><strong>Usuarios de prueba</strong></p>
-      <p>admin&#64;controldegastos.com — Admin123</p>
-      <p>usuario&#64;controldegastos.com — Usuario123</p>
-    </div>
+      <div class="login-registro">
+        <p>¿No tiene cuenta? <a routerLink="/registro">Regístrese aquí</a></p>
+      </div>
+    </form>
   </div>
 </div>

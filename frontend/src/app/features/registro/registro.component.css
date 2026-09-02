@@ -1,0 +1,289 @@
+.registro-pagina {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--cream-dark);
+  background-image: 
+    radial-gradient(ellipse at 20% 50%, rgba(193, 154, 107, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 50%, rgba(193, 154, 107, 0.15) 0%, transparent 50%);
+  position: relative;
+  overflow: hidden;
+  animation: fadeInVintage 0.6s ease-out;
+}
+
+/* Trama de líneas vintage */
+.registro-pagina::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(139, 115, 85, 0.03) 2px,
+      rgba(139, 115, 85, 0.03) 4px
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* OBJETOS GEOMÉTRICOS VINTAGE EN EL FONDO */
+
+/* Círculos concéntricos decorativos superiores */
+.registro-pagina::after {
+  content: '';
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  border: 1px dashed var(--gold-light);
+  box-shadow: inset 0 0 0 20px rgba(193, 154, 107, 0.05), 0 0 0 40px rgba(193, 154, 107, 0.03);
+  pointer-events: none;
+  z-index: 0;
+  animation: floatVintage 12s ease-in-out infinite alternate;
+}
+
+/* Elemento geométrico inferior (Rombo) */
+.registro-bg-shape {
+  position: absolute;
+  bottom: -60px;
+  left: -60px;
+  width: 240px;
+  height: 240px;
+  border: 1px solid var(--gold);
+  opacity: 0.15;
+  transform: rotate(45deg);
+  pointer-events: none;
+  z-index: 0;
+  animation: floatVintage 9s ease-in-out infinite alternate-reverse;
+}
+
+/* TARJETA DE REGISTRO */
+.registro-tarjeta {
+  width: 100%;
+  max-width: 480px;
+  background: #fcf8f4;
+  border-radius: 12px;
+  padding: 40px 36px;
+  box-shadow: 
+    0 4px 6px rgba(44, 24, 16, 0.05),
+    0 12px 40px rgba(44, 24, 16, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--cream-deeper);
+  position: relative;
+  z-index: 1;
+  animation: fadeInVintage 0.8s ease-out;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.registro-tarjeta {
+  position: relative;
+  z-index: 2;
+}
+
+.registro-tarjeta:hover {
+  box-shadow: 
+    0 6px 12px rgba(44, 24, 16, 0.06),
+    0 16px 48px rgba(44, 24, 16, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.registro-tarjeta::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 40px;
+  height: 40px;
+  border-right: 3px solid var(--gold);
+  border-top: 3px solid var(--gold);
+  border-radius: 0 12px 0 0;
+  opacity: 0.4;
+  transition: opacity 0.3s ease;
+}
+
+.registro-tarjeta::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: -1px;
+  width: 40px;
+  height: 40px;
+  border-left: 3px solid var(--gold);
+  border-bottom: 3px solid var(--gold);
+  border-radius: 0 0 0 12px;
+  opacity: 0.4;
+  transition: opacity 0.3s ease;
+}
+
+.registro-tarjeta:hover::before,
+.registro-tarjeta:hover::after {
+  opacity: 0.8;
+}
+
+.registro-marca {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+}
+
+.registro-marca .logo {
+  width: 155px;
+  height: 155px;
+  object-fit: contain;
+}
+
+.registro-marca::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background: var(--gold);
+  transition: width 0.3s ease;
+}
+
+.registro-tarjeta:hover .registro-marca::after {
+  width: 100px;
+}
+
+.registro-marca__icono {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--gold-dark), #6d5a43);
+  color: #fcf8f4;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(109, 90, 67, 0.3);
+  animation: floatVintage 6s ease-in-out infinite;
+}
+
+.registro-marca h1 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0 0 2px;
+}
+
+.registro-marca p {
+  font-size: 0.8rem;
+  color: var(--text-soft);
+  margin: 0;
+  font-weight: 300;
+}
+
+/* SECCIÓN INFORMATIVA */
+.registro-info {
+  text-align: center;
+  padding: 1rem 0;
+  animation: fadeInVintage 0.5s ease-out;
+}
+
+/* Ornamento geométrico limpio en lugar del cuadro de emojis */
+.registro-info__icono {
+  width: 42px;
+  height: 42px;
+  margin: 0 auto 1.5rem;
+  border: 1px solid var(--gold);
+  transform: rotate(45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  animation: floatVintage 5s ease-in-out infinite;
+  background: transparent;
+}
+
+.registro-info__icono::after {
+  content: '';
+  width: 12px;
+  height: 12px;
+  background: var(--gold-dark);
+}
+
+.registro-info h3 {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--text-dark);
+  margin-bottom: 0.75rem;
+}
+
+.registro-info p {
+  font-size: 0.9rem;
+  color: var(--text-medium);
+  line-height: 1.6;
+  margin-bottom: 0.75rem;
+}
+
+/* ESTILOS ESPECÍFICOS PARA LOS BOTONES DE REGISTRO (.btn-registro) */
+.registro-acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 2rem;
+}
+
+.btn-registro {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--gold-dark), #6d5a43);
+  color: #fcf8f4 !important;
+  font-size: 0.88rem;
+  font-weight: 500;
+  text-decoration: none !important;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  font-family: var(--font-body);
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 12px rgba(109, 90, 67, 0.2);
+  box-sizing: border-box;
+}
+
+.btn-registro:hover {
+  background: linear-gradient(135deg, #7a654b, #5d4c38);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(109, 90, 67, 0.3);
+  color: #ffffff !important;
+}
+
+.btn-registro:active {
+  transform: translateY(0);
+}
+
+/* Botón secundario "Volver al inicio" */
+.btn-registro.btn-registro--secundario {
+  background: transparent;
+  color: var(--text-dark) !important;
+  border: 1px solid var(--gold-light);
+  box-shadow: none;
+}
+
+.btn-registro.btn-registro--secundario:hover {
+  background: var(--cream-dark);
+  border-color: var(--gold);
+  color: var(--gold-dark) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(44, 24, 16, 0.05);
+}

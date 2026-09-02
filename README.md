@@ -1,6 +1,14 @@
 # Control de Gastos
 
-Proyecto base con arquitectura orientada a componentes, separado en `frontend/` (Angular) y `backend/` (Node.js + Express + TypeScript + PostgreSQL). Esta semana solo está implementado el **login con JWT**, con dos tipos de usuario: `admin` y `normal`.
+Aplicación web para el control de gastos e ingresos personales, con arquitectura orientada a componentes, separada en `frontend/` (Angular) y `backend/` (Node.js + Express + TypeScript + PostgreSQL).
+
+## Estado actual
+
+- ✅ **Login** con JWT, dos roles (`admin` / `user`).
+- ✅ **Dashboard** con tarjetas, gráfico de ingresos vs. gastos y gráfico de categorías.
+- ✅ **Ingresos**: CRUD completo conectado a PostgreSQL, filtros (búsqueda, fecha, categoría), gráfico de fuentes de ingreso — todo real, sin datos quemados.
+- 🕓 **Gastos**: todavía con datos de demostración (próxima etapa).
+- 🕓 Reportes, Categorías y Configuración: pantallas "próximamente".
 
 ## Estructura
 
@@ -10,23 +18,28 @@ control-de-gastos/
 │   └── src/
 │       ├── config/          # conexión a PostgreSQL
 │       ├── middlewares/     # manejo de errores y verificación de JWT/roles
-│       ├── modules/
-│       │   ├── app.ts       # configuración de Express
-│       │   ├── server.ts    # arranque del servidor
-│       │   ├── auth/        # módulo de login (controllers, services, models, routes)
-│       │   └── expenses/    # carpetas listas para la próxima semana
-│       └── scripts/         # scripts para crear tablas e insertar usuarios de prueba
+│       └── modules/
+│           ├── app.ts       # configuración de Express
+│           ├── server.ts    # arranque del servidor
+│           ├── auth/        # login (controllers, services, models, routes)
+│           ├── ingresos/    # CRUD de ingresos (mismo patrón que auth)
+│           └── expenses/    # carpetas listas para la siguiente etapa (gastos)
 └── frontend/
     └── src/app/
-        ├── core/             # modelos y servicios compartidos (auth, guard, interceptor)
+        ├── core/             # servicios compartidos (auth, dashboard, ingresos)
+        ├── shared/           # sidebar, gráficos (línea/dona), modelos, utils
         └── features/
-            ├── login/        # pantalla de inicio de sesión
-            └── inicio/       # pantalla de ejemplo después de iniciar sesión
+            ├── landing/      # página de bienvenida
+            ├── login/        # inicio de sesión
+            ├── registro/     # pantalla informativa (el alta real la hace un admin)
+            ├── inicio/       # Dashboard
+            ├── ingresos/     # gestión de ingresos
+            └── gastos, reportes, categorias, configuracion/  # próximamente
 ```
 
 ## Backend
 
-1. Entra a la carpeta:
+1. Entra a la carpeta e instala dependencias:
    ```
    cd backend
    pnpm install
@@ -36,14 +49,14 @@ control-de-gastos/
    cp .env.example .env
    ```
 3. Crea la base de datos en PostgreSQL (una vez, desde psql o pgAdmin):
-   ```
+   ```sql
    CREATE DATABASE control_de_gastos;
    ```
-4. Crea las tablas:
+4. Crea/actualiza las tablas (es seguro correrlo aunque ya existan datos, usa `CREATE TABLE IF NOT EXISTS`):
    ```
    pnpm db:init
    ```
-5. Inserta los usuarios de prueba (uno admin y uno normal):
+5. Inserta los usuarios de prueba:
    ```
    pnpm db:seed
    ```
@@ -51,27 +64,32 @@ control-de-gastos/
    ```
    pnpm dev
    ```
-   La API queda disponible en `http://localhost:3000/api`.
+   La API queda disponible en `http://localhost:3010/api`.
 
 ### Usuarios de prueba
 
-| Correo                        | Contraseña  | Rol    |
-|--------------------------------|-------------|--------|
-| admin@controldegastos.com      | Admin123    | admin  |
-| usuario@controldegastos.com    | Usuario123  | normal |
+| Correo | Contraseña | Rol |
+|---|---|---|
+| admin@controldegastos.com | Admin123 | admin |
+| user@controldegastos.com | User123 | user |
+| maria@controldegastos.com | Maria123 | user |
 
-### Endpoint de login
+### Endpoints principales
 
 ```
-POST /api/auth/login
-Body: { "correo": "admin@controldegastos.com", "password": "Admin123" }
-```
+POST   /api/auth/login          Iniciar sesión
 
-Responde con `{ ok, mensaje, data: { token, usuario } }`. El token debe enviarse en las siguientes peticiones protegidas como `Authorization: Bearer <token>`.
+GET    /api/ingresos            Listar ingresos del usuario autenticado
+                                 (query params: busqueda, fechaInicio, fechaFin, categoria)
+POST   /api/ingresos            Crear ingreso
+PUT    /api/ingresos/:id        Editar ingreso
+DELETE /api/ingresos/:id        Eliminar ingreso
+```
+Todas las rutas de `/api/ingresos` requieren el header `Authorization: Bearer <token>` y solo devuelven/afectan datos del usuario autenticado.
 
 ## Frontend
 
-1. Entra a la carpeta:
+1. Entra a la carpeta e instala dependencias:
    ```
    cd frontend
    pnpm install
@@ -80,12 +98,10 @@ Responde con `{ ok, mensaje, data: { token, usuario } }`. El token debe enviarse
    ```
    pnpm start
    ```
-3. Abre `http://localhost:4200`. La pantalla de login consume la API en `http://localhost:3000/api` (configurado en `src/environments/environment.ts`).
-
-Al iniciar sesión correctamente, se guarda el token JWT y los datos del usuario en `localStorage`, y se redirige a `/inicio`, donde se muestra el nombre y el rol del usuario autenticado.
+3. Abre `http://localhost:4200`.
 
 ## Próximos pasos
 
-- Completar el módulo `expenses` en el backend (controllers, services, models, routes) siguiendo el mismo patrón usado en `auth`.
-- Agregar las pantallas de gastos en `frontend/src/app/features/`.
-- Usar el middleware `autorizarRoles("admin")` en las rutas que solo debe poder usar el administrador.
+- Implementar el módulo `expenses` en el backend siguiendo el mismo patrón que `ingresos` (las carpetas ya están creadas y vacías).
+- Conectar la pantalla de Gastos a datos reales, igual que se hizo con Ingresos.
+- Ir completando Reportes, Categorías y Configuración.

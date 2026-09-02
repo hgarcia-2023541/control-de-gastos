@@ -1,0 +1,30 @@
+<svg
+  class="line-chart"
+  [attr.viewBox]="'0 0 ' + ancho + ' ' + alto"
+  preserveAspectRatio="xMidYMid meet"
+  role="img"
+  aria-label="Gráfico de ingresos y gastos"
+>
+  <!-- líneas guía horizontales -->
+  <g class="guias">
+    <ng-container *ngFor="let guia of lineasGuia()">
+      <line [attr.x1]="28" [attr.x2]="ancho - 10" [attr.y1]="guia.y" [attr.y2]="guia.y" />
+      <text [attr.x]="4" [attr.y]="guia.y + 3">{{ guia.valor }}</text>
+    </ng-container>
+  </g>
+
+  <!-- áreas rellenas -->
+  <path class="area area--ingresos" [attr.d]="areaIngresos()"></path>
+  <path class="area area--gastos" [attr.d]="areaGastos()"></path>
+
+  <!-- líneas -->
+  <path class="linea linea--ingresos" [attr.d]="lineaIngresos()"></path>
+  <path class="linea linea--gastos" [attr.d]="lineaGastos()"></path>
+
+  <!-- etiquetas del eje X -->
+  <g class="etiquetas-x">
+    <ng-container *ngFor="let etiqueta of etiquetas(); let i = index">
+      <text [attr.x]="posicionEtiquetaX(i)" [attr.y]="alto - 4">{{ etiqueta }}</text>
+    </ng-container>
+  </g>
+</svg>
