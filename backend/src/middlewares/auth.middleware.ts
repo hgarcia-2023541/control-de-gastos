@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { AppError } from "./errorHandler";
 
-export type RolUsuario = "admin" | "normal";
+export type RolUsuario = "admin" | "user";
 
 export interface UsuarioToken {
   id: number;
@@ -10,14 +10,10 @@ export interface UsuarioToken {
   rol: RolUsuario;
 }
 
-// Extendemos el tipo Request de Express para poder guardar el usuario
-// autenticado dentro de req.usuario en las siguientes rutas.
 export interface RequestConUsuario extends Request {
   usuario?: UsuarioToken;
 }
 
-// Verifica que la petición traiga un token JWT válido en el header
-// Authorization: "Bearer <token>".
 export function verificarToken(
   req: RequestConUsuario,
   _res: Response,
@@ -39,16 +35,20 @@ export function verificarToken(
     req.usuario = payload;
     next();
   } catch (error) {
-    throw new AppError("Token inválido o expirado", 401);
+    if (error instanceof jwt.TokenExpiredError) {
+      throw new AppError("Su sesión ha expirado. Por favor, inicie sesión nuevamente.", 401);
+    }
+    if (error instanceof jwt.JsonWebTokenError) {
+      throw new AppError("Token inválido. Por favor, inicie sesión nuevamente.", 401);
+    }
+    throw new AppError("Error de autenticación. Por favor, inicie sesión nuevamente.", 401);
   }
 }
 
-// Middleware adicional para restringir rutas según el rol del usuario.
-// Uso: router.get("/ruta", verificarToken, autorizarRoles("admin"), controlador)
 export function autorizarRoles(...rolesPermitidos: RolUsuario[]) {
   return (req: RequestConUsuario, _res: Response, next: NextFunction) => {
     if (!req.usuario || !rolesPermitidos.includes(req.usuario.rol)) {
-      throw new AppError("No tienes permisos para realizar esta acción", 403);
+      throw new AppError("No tiene permisos para realizar esta acción", 403);
     }
     next();
   };
