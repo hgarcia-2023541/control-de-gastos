@@ -1,6 +1,3 @@
-// Uso: npm run db:seed
-// Inserta dos usuarios de prueba (uno admin y uno normal) para poder
-// probar el login de inmediato. Si el correo ya existe, no hace nada.
 import "dotenv/config";
 import bcrypt from "bcryptjs";
 import { pool } from "../config/db";
@@ -9,7 +6,7 @@ async function crearUsuario(
   nombre: string,
   correo: string,
   password: string,
-  rol: "admin" | "normal"
+  rol: "admin" | "user"
 ) {
   const passwordHash = bcrypt.hashSync(password, 10);
 
@@ -20,10 +17,11 @@ async function crearUsuario(
     [nombre, correo, passwordHash, rol]
   );
 
-  console.log(`👤 Usuario listo: ${correo} / ${password} (${rol})`);
+  console.log(`👤 Usuario: ${correo} / ${password} (${rol})`);
 }
 
 async function main() {
+  // Usuario admin
   await crearUsuario(
     "Administrador",
     "admin@controldegastos.com",
@@ -31,14 +29,24 @@ async function main() {
     "admin"
   );
 
+  // Usuarios normales
   await crearUsuario(
     "Usuario de prueba",
-    "usuario@controldegastos.com",
-    "Usuario123",
-    "normal"
+    "user@controldegastos.com",
+    "User123",
+    "user"
+  );
+
+  // Usuario normal adicional
+  await crearUsuario(
+    "María González",
+    "maria@controldegastos.com",
+    "Maria123",
+    "user"
   );
 
   console.log("✅ Usuarios de prueba insertados");
+  console.log("📝 Roles: admin puede crear usuarios, user es el rol por defecto");
 }
 
 main()

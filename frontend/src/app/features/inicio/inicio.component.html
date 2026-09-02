@@ -1,18 +1,184 @@
-<div class="inicio-pagina">
-  <div class="inicio-tarjeta">
-    <span class="inicio-badge" [class.inicio-badge--admin]="usuario?.rol === 'admin'">
-      {{ usuario?.rol === "admin" ? "Administrador" : "Usuario normal" }}
+<div class="dashboard">
+  <app-sidebar></app-sidebar>
+
+  <main class="dashboard-main">
+
+    <!-- Encabezado -->
+    <header class="dashboard-header">
+      <div class="dashboard-header__saludo">
+        <h1>Hola, {{ primerNombre }} 👋</h1>
+        <p>Aquí tiene un resumen de sus finanzas.</p>
+      </div>
+
+      <div class="dashboard-header__acciones">
+        <div class="selector-periodo">
+          <button type="button" (click)="alternarSelectorPeriodo()">
+            {{ periodoSeleccionado() }}
+            <svg viewBox="0 0 24 24" fill="none" class="selector-periodo__flecha">
+              <path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <ul class="selector-periodo__lista" *ngIf="mostrarSelectorPeriodo()">
+            <li *ngFor="let periodo of periodos" (click)="seleccionarPeriodo(periodo)">
+              {{ periodo }}
+            </li>
+          </ul>
+        </div>
+
+        <div class="perfil-usuario" [title]="usuario?.correo || ''">
+          {{ inicialUsuario }}
+        </div>
+      </div>
+    </header>
+
+    <!-- Tarjetas financieras -->
+    <section class="tarjetas">
+     <!-- Tarjeta Ingresos -->
+<article class="tarjeta tarjeta--ingresos">
+  <div class="tarjeta__iconos">
+    <!-- Icono principal a la izquierda -->
+    <span class="tarjeta__icono">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M12 19V5M6 11l6-6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
     </span>
 
-    <h1>Bienvenido, {{ usuario?.nombre }}</h1>
-    <p class="inicio-correo">{{ usuario?.correo }}</p>
-
-    <p class="inicio-texto">
-      Iniciaste sesión correctamente con un token JWT válido. Desde aquí se
-      irán construyendo las pantallas del módulo de gastos en las próximas
-      semanas.
-    </p>
-
-    <button type="button" (click)="cerrarSesion()">Cerrar sesión</button>
+    <!-- Grupo a la derecha: Flecha tendencia + Moneda -->
+    <div class="tarjeta__grupo-derecho">
+      <span class="tarjeta__icono tarjeta__icono--tendencia-positiva">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M12 19V5M6 11l6-6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span class="tarjeta__icono tarjeta__icono--secundario">
+        <img src="/moneda.svg" alt="Moneda">
+      </span>
+    </div>
   </div>
+  <p class="tarjeta__titulo">Ingresos</p>
+  <p class="tarjeta__monto">Q {{ formatoQuetzales(resumen().ingresos) }}</p>
+</article>
+
+     <article class="tarjeta tarjeta--gastos">
+  <div class="tarjeta__iconos">
+    <!-- Icono principal a la izquierda -->
+    <span class="tarjeta__icono">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M12 5v14M6 13l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+
+    <!-- Grupo a la derecha: Flecha tendencia + Papel -->
+    <div class="tarjeta__grupo-derecho">
+      <span class="tarjeta__icono tarjeta__icono--tendencia-negativa">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M12 5v14M6 13l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span class="tarjeta__icono tarjeta__icono--secundario">
+        <img src="/papel.svg" alt="Papel">
+      </span>
+    </div>
+  </div>
+  <p class="tarjeta__titulo">Gastos</p>
+  <p class="tarjeta__monto">Q {{ formatoQuetzales(resumen().gastos) }}</p>
+</article>
+
+      <article class="tarjeta tarjeta--balance">
+        <div class="tarjeta__iconos">
+          <span class="tarjeta__icono">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 3v18M7 7h10M4 7l3-4 3 4M20 7l-3-4-3 4M4 7c0 2 1.3 3.5 3 3.5S10 9 10 7M14 7c0 2 1.3 3.5 3 3.5S20 9 20 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="tarjeta__icono tarjeta__icono--secundario">
+            <img src="/cartera.svg" alt="Cartera">
+          </span>
+        </div>
+        <p class="tarjeta__titulo">Balance</p>
+        <p class="tarjeta__monto">Q {{ formatoQuetzales(balance()) }}</p>
+      </article>
+    </section>
+
+    <!-- Gráficos -->
+    <section class="graficos">
+      <article class="panel panel--linea">
+        <div class="panel__encabezado">
+          <h2>Resumen de ingresos y gastos</h2>
+          <div class="panel__leyenda">
+            <span><i class="punto punto--ingresos"></i> Ingresos</span>
+            <span><i class="punto punto--gastos"></i> Gastos</span>
+          </div>
+        </div>
+        <app-line-chart [datos]="serieMensual()"></app-line-chart>
+      </article>
+
+      <article class="panel panel--dona">
+        <h2>Gastos por categoría</h2>
+        <app-donut-chart [datos]="categorias()"></app-donut-chart>
+
+        <div class="insight" *ngIf="categoriaConMayorGasto() as top">
+          <p class="insight__titulo">Quick Financial Insight</p>
+          <p class="insight__texto">
+            Este mes ha utilizado el <strong>{{ porcentajeUtilizado() }}%</strong> de sus ingresos.
+            Su mayor gasto fue en <strong>{{ top.nombre }}</strong>.
+          </p>
+        </div>
+      </article>
+    </section>
+
+    <!-- Últimos gastos -->
+    <section class="panel panel--tabla">
+      <h2>Últimos gastos</h2>
+      <div class="tabla-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Descripción</th>
+              <th>Categoría</th>
+              <th>Fecha</th>
+              <th>Monto (Q)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let gasto of ultimosGastos()">
+              <td>{{ gasto.descripcion }}</td>
+              <td>
+                <span class="categoria-pill" [ngSwitch]="gasto.categoria">
+                  <svg *ngSwitchCase="'Alimentación'" class="categoria-pill__icono" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 3v7a2 2 0 0 0 2 2v9M7 3v7M9 3v7M7 10h2M15 3c-1.5 0-2.5 1.8-2.5 4s1 4 1 4v10h1.5V4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <svg *ngSwitchCase="'Transporte'" class="categoria-pill__icono" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 16V11l2-5h12l2 5v5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                    <path d="M4 16h16M6 16v2M18 16v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                    <circle cx="7.5" cy="13.5" r="1" fill="currentColor"/>
+                    <circle cx="16.5" cy="13.5" r="1" fill="currentColor"/>
+                  </svg>
+                  <svg *ngSwitchCase="'Educación'" class="categoria-pill__icono" viewBox="0 0 24 24" fill="none">
+                    <path d="m3 8 9-4 9 4-9 4-9-4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                    <path d="M7 10.5V15c0 1.4 2.2 2.5 5 2.5s5-1.1 5-2.5v-4.5M20 8v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <svg *ngSwitchCase="'Entretenimiento'" class="categoria-pill__icono" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 9h10a3 3 0 0 1 3 3.2l-.5 4a2 2 0 0 1-3.6.9L15 15H9l-.9 2.1a2 2 0 0 1-3.6-.9l-.5-4A3 3 0 0 1 7 9Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                    <path d="M9 12.5h2M16.2 12h.01M14 13.8h.01" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                  </svg>
+                  <svg *ngSwitchCase="'Hogar'" class="categoria-pill__icono" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 11.5 12 4l8 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M6 10v9a1 1 0 0 0 1 1h3v-5a2 2 0 0 1 4 0v5h3a1 1 0 0 0 1-1v-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <svg *ngSwitchDefault class="categoria-pill__icono" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/>
+                  </svg>
+                  {{ gasto.categoria }}
+                </span>
+              </td>
+              <td>{{ formatoFecha(gasto.fecha) }}</td>
+              <td>Q {{ formatoQuetzales(gasto.monto) }}</td>
+            </tr>
+            <tr *ngIf="!cargando() && ultimosGastos().length === 0">
+              <td colspan="4" class="sin-datos">Todavía no hay gastos registrados.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
 </div>

@@ -1,18 +1,67 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+:root {
+  --cream: #f9f6f0;
+  --cream-dark: #f2ebe4;
+  --cream-deeper: #e8ddd2;
+  --gold: #c4a882;
+  --gold-light: #e8cdb5;
+  --gold-dark: #8b7355;
+  --text-dark: #2c1810;
+  --text-medium: #5a4a3e;
+  --text-soft: #8b7a6b;
+
+  /* Paleta del sidebar del Dashboard (verde bosque oscuro + dorado,
+     complementa la paleta cream/gold ya existente, no la reemplaza) */
+  --sidebar-bg: #16241b;
+  --sidebar-bg-light: #1f3327;
+  --sidebar-text: #d9d2c4;
+  --sidebar-text-soft: #8fa093;
+  --sidebar-active-bg: var(--gold);
+  --sidebar-active-text: #2c1810;
+
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'Inter', sans-serif;
+  --font-accent: 'Playfair Display', serif;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --dur: 0.3s;
+  --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --shadow-md: 0 10px 30px rgba(44, 24, 16, 0.08);
+}
+
+/* Animaciones globales vintage */
+@keyframes fadeInVintage {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatVintage {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(1deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+}
 
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-}
-
-html,
-body {
-  height: 100%;
 }
 
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  color: #1c1c1a;
-  background: #f4f3f0;
+  font-family: var(--font-body);
+  color: var(--text-dark);
+  background-color: var(--cream);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }

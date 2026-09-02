@@ -1,70 +1,438 @@
-.inicio-pagina {
-  min-height: 100vh;
+.dashboard {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f4f3f0;
-  padding: 24px;
+  min-height: 100vh;
+  background: var(--cream-dark);
 }
 
-.inicio-tarjeta {
-  width: 100%;
-  max-width: 440px;
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 36px 32px;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
-  text-align: center;
+.dashboard-main {
+  flex: 1;
+  position: relative;
+  padding: 32px 36px 48px;
+  overflow-x: hidden;
+  animation: fadeInVintage 0.5s ease-out;
 }
 
-.inicio-badge {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 999px;
-  background: #e7f2ee;
-  color: #0f6e56;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
-  margin-bottom: 16px;
+/* Todo el contenido real va por encima de las monedas flotantes
+   (financial-background tiene z-index:0 y pointer-events:none) */
+.tarjetas,
+.graficos,
+.panel--tabla {
+  position: relative;
+  z-index: 1;
 }
 
-.inicio-badge--admin {
-  background: #fdeee3;
-  color: #a3521a;
+/* El encabezado necesita quedar por encima de las secciones de abajo:
+   de ahí sale el desplegable del selector de período. Si compartiera
+   el mismo z-index que las tarjetas/gráficos/tabla, la sección que
+   aparece después en el HTML gana el empate de apilamiento y tapa el
+   desplegable (mismo bug corregido en la vista de Ingresos). */
+.dashboard-header {
+  position: relative;
+  z-index: 10;
 }
 
-.inicio-tarjeta h1 {
-  font-size: 1.3rem;
-  color: #1c1c1a;
+/* ---------- Encabezado ---------- */
+.dashboard-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.dashboard-header__saludo h1 {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  color: var(--text-dark);
   margin: 0 0 4px;
 }
 
-.inicio-correo {
+.dashboard-header__saludo p {
+  color: var(--text-medium);
+  font-size: 0.92rem;
+}
+
+.dashboard-header__acciones {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.selector-periodo {
+  position: relative;
+}
+
+.selector-periodo > button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--cream);
+  border: 1px solid var(--cream-deeper);
+  border-radius: var(--radius);
+  font-family: var(--font-body);
   font-size: 0.85rem;
-  color: #8a8880;
-  margin: 0 0 18px;
+  font-weight: 500;
+  color: var(--text-dark);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(44, 24, 16, 0.05);
+  transition: border-color var(--dur) var(--ease);
 }
 
-.inicio-texto {
-  font-size: 0.9rem;
-  color: #55534d;
-  line-height: 1.6;
-  margin-bottom: 24px;
+.selector-periodo > button:hover {
+  border-color: var(--gold);
 }
 
-button {
-  padding: 11px 20px;
-  border: none;
-  border-radius: 8px;
-  background: #1c1c1a;
-  color: #ffffff;
-  font-size: 0.9rem;
-  font-weight: 600;
+.selector-periodo__flecha {
+  width: 14px;
+  height: 14px;
+}
+
+.selector-periodo__lista {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 160px;
+  background: var(--cream);
+  border: 1px solid var(--cream-deeper);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  list-style: none;
+  padding: 6px;
+  z-index: 5;
+}
+
+.selector-periodo__lista li {
+  padding: 9px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: var(--text-medium);
   cursor: pointer;
 }
 
-button:hover {
-  background: #33322f;
+.selector-periodo__lista li:hover {
+  background: var(--cream-dark);
+  color: var(--text-dark);
+}
+
+.perfil-usuario {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: #fcf8f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  box-shadow: 0 2px 8px rgba(139, 115, 85, 0.35);
+  flex-shrink: 0;
+}
+
+/* ---------- Tarjetas financieras ---------- */
+.tarjetas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.tarjeta {
+  background: var(--cream);
+  border: 1px solid var(--cream-deeper);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+.tarjeta--ingresos {
+  border-color: var(--gold-light);
+}
+
+.tarjeta--gastos {
+  border-color: var(--gold-light);
+}
+
+.tarjeta--balance {
+  background: #eee8d8;
+  border-color: #c4a882;
+}
+
+.tarjeta:hover {
+  transform: translateY(-3px);
+}
+
+.tarjeta__iconos {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Empuja el grupo derecho al borde final */
+  margin-bottom: 14px;
+}
+
+/* Grupo del lado derecho (flecha pequeña + ilustración) */
+.tarjeta__grupo-derecho {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* Espaciamiento entre la flechita y la moneda/papel */
+}
+
+/* Icono principal circular (el de la izquierda) */
+.tarjeta__icono {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--cream-dark);
+  color: var(--gold-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.tarjeta__icono img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  display: block;
+}
+
+
+/* Flechas de tendencia pequeñas (sin fondo circular, solo la flecha) */
+.tarjeta__icono--tendencia-positiva,
+.tarjeta__icono--tendencia-negativa {
+  width: auto;
+  height: auto;
+  background: transparent; /* Sin fondo */
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.tarjeta__icono--tendencia-positiva {
+  color: #3f5c46; /* Verde */
+}
+
+.tarjeta__icono--tendencia-negativa {
+  color: #a05a3a; /* Rojo / Marrón */
+}
+
+.tarjeta__icono--tendencia-positiva svg,
+.tarjeta__icono--tendencia-negativa svg {
+  width: 20px; /* Tamaño reducido de la flechita */
+  height: 20px;
+}
+
+/* Ilustración de Moneda / Papel */
+.tarjeta__icono--secundario {
+  width: 50px;
+  height: 50px;
+  background: transparent;
+}
+
+.tarjeta__icono--secundario img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.tarjeta__titulo {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0 0 4px;
+}
+
+.tarjeta__monto {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+/* ---------- Gráficos ---------- */
+.graficos {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 18px;
+  margin-bottom: 24px;
+  align-items: stretch;
+}
+
+.panel {
+  background: var(--cream);
+  border: 1px solid var(--cream-deeper);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  box-shadow: var(--shadow-md);
+}
+
+.panel h2 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--text-dark);
+  margin: 0 0 14px;
+}
+
+.panel__encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.panel__encabezado h2 {
+  margin: 0;
+}
+
+.panel__leyenda {
+  display: flex;
+  gap: 14px;
+  font-size: 0.78rem;
+  color: var(--text-medium);
+}
+
+.punto {
+  display: inline-block;
+  width: 12px;
+  height: 2.5px;
+  border-radius: 2px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.punto--ingresos {
+  background: var(--gold-dark);
+}
+
+.punto--gastos {
+  background: var(--sidebar-bg-light);
+}
+
+.panel--dona {
+  display: flex;
+  flex-direction: column;
+}
+
+.insight {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--cream-deeper);
+}
+
+.insight__titulo {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--gold-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 4px;
+}
+
+.insight__texto {
+  font-size: 0.82rem;
+  color: var(--text-medium);
+  line-height: 1.5;
+}
+
+.insight__texto strong {
+  color: var(--text-dark);
+}
+
+/* ---------- Tabla últimos gastos ---------- */
+.panel--tabla {
+  background: var(--cream);
+  border: 1px solid var(--cream-deeper);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  box-shadow: var(--shadow-md);
+}
+
+.tabla-scroll {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+}
+
+thead {
+  background: #f1ede3;
+}
+
+thead th {
+  text-align: left;
+  padding: 10px 12px;
+  color: var(--text-dark);
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-transform: none;
+  letter-spacing: 0;
+  border-bottom: 1px solid var(--cream-deeper);
+  white-space: nowrap;
+}
+
+tbody td {
+  padding: 12px;
+  color: var(--text-medium);
+  border-bottom: 1px solid var(--cream-dark);
+  white-space: nowrap;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.categoria-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.categoria-pill__icono {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--gold-dark);
+}
+
+.sin-datos {
+  text-align: center;
+  color: var(--text-soft);
+  padding: 24px 12px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1100px) {
+  .graficos {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .tarjetas {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    flex-direction: column;
+  }
+  .dashboard-main {
+    padding: 24px 18px 36px;
+  }
+  .dashboard-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .dashboard-header__acciones {
+    justify-content: space-between;
+  }
 }

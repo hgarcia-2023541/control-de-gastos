@@ -1,0 +1,147 @@
+:host {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.financial-background {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Monedas */
+
+.moneda {
+  position: absolute;
+
+  width: 72px;
+  height: 72px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 32% 28%,
+      #fff1b0 0%,
+      #e5bd55 35%,
+      #bd8d27 70%,
+      #805d19 100%
+    );
+
+  border: 4px solid #a97920;
+
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.65),
+    inset 0 -4px 6px rgba(90, 55, 10, 0.3),
+    5px 10px 18px rgba(55, 39, 15, 0.22);
+
+  color: #795516;
+
+  font-family: Georgia, serif;
+  font-size: 28px;
+  font-weight: 700;
+
+  opacity: 0.82;
+
+  will-change: transform;
+}
+
+/* Borde interior de la moneda */
+
+.moneda::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+
+  border: 2px solid rgba(255, 239, 163, 0.55);
+  border-radius: 50%;
+}
+
+.moneda span {
+  position: relative;
+  z-index: 1;
+
+  text-shadow:
+    1px 1px 0 rgba(255, 239, 163, 0.5),
+    -1px -1px 0 rgba(90, 60, 15, 0.25);
+}
+
+/* Posiciones */
+
+.moneda-1 {
+  top: 10%;
+  left: 8%;
+}
+
+.moneda-2 {
+  top: 18%;
+  right: 9%;
+  width: 55px;
+  height: 55px;
+  font-size: 22px;
+}
+
+.moneda-3 {
+  top: 63%;
+  left: 5%;
+  width: 48px;
+  height: 48px;
+  font-size: 20px;
+}
+
+.moneda-4 {
+  bottom: 11%;
+  right: 7%;
+  width: 82px;
+  height: 82px;
+  font-size: 30px;
+}
+
+.moneda-5 {
+  bottom: 18%;
+  left: 14%;
+  width: 62px;
+  height: 62px;
+  font-size: 24px;
+}
+
+.moneda-6 {
+  top: 7%;
+  left: 48%;
+  width: 38px;
+  height: 38px;
+  font-size: 16px;
+  opacity: 0.45;
+}
+
+/* Pantallas pequeñas */
+
+@media (max-width: 700px) {
+  .moneda-1,
+  .moneda-4 {
+    width: 52px;
+    height: 52px;
+    font-size: 21px;
+  }
+
+  .moneda-2,
+  .moneda-5 {
+    width: 42px;
+    height: 42px;
+    font-size: 18px;
+  }
+
+  .moneda-3,
+  .moneda-6 {
+    display: none;
+  }
+}
