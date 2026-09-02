@@ -27,3 +27,17 @@ export function periodoActual(): string {
   const capitalizado = nombre.charAt(0).toUpperCase() + nombre.slice(1);
   return `${capitalizado} ${ahora.getFullYear()}`;
 }
+
+export function ultimosPeriodos(cantidad = 3): string[] {
+  const ahora = new Date();
+  const resultado: string[] = [];
+
+  for (let i = cantidad - 1; i >= 0; i--) {
+    const fecha = new Date(ahora.getFullYear(), ahora.getMonth() - i, 1);
+    const nombre = MESES[fecha.getMonth()];
+    const capitalizado = nombre.charAt(0).toUpperCase() + nombre.slice(1);
+    resultado.push(`${capitalizado} ${fecha.getFullYear()}`);
+  }
+
+  return resultado;
+}
