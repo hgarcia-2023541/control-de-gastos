@@ -1,0 +1,58 @@
+<aside class="sidebar">
+  <div class="sidebar-marca">
+    <div class="sidebar-marca__logo">
+      <img src="/logo.svg" alt="Control de Gastos" />
+    </div>
+    <span class="sidebar-marca__texto">Control de<br />Gastos</span>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a
+      *ngFor="let item of items"
+      [routerLink]="item.ruta"
+      routerLinkActive="activo"
+      class="sidebar-nav__item"
+    >
+      <span class="sidebar-nav__icono" [ngSwitch]="item.icono">
+        <!-- Inicio -->
+        <svg *ngSwitchCase="'inicio'" viewBox="0 0 24 24" fill="none">
+          <path d="M4 11.5 12 4l8 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6 10v9a1 1 0 0 0 1 1h3v-5a2 2 0 0 1 4 0v5h3a1 1 0 0 0 1-1v-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <!-- Gastos -->
+        <svg *ngSwitchCase="'gastos'" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="8.2" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M12 7.5v9M14.6 9.6c0-1-1-1.7-2.6-1.7-1.7 0-2.6.8-2.6 1.8 0 2.6 5.2 1.3 5.2 3.9 0 1-1 1.9-2.6 1.9-1.6 0-2.7-.7-2.7-1.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <!-- Ingresos -->
+        <svg *ngSwitchCase="'ingresos'" viewBox="0 0 24 24" fill="none">
+          <path d="M6 15.5 10.5 11l3 3L18 8.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M13.5 8.5H18v4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <!-- Reportes -->
+        <svg *ngSwitchCase="'reportes'" viewBox="0 0 24 24" fill="none">
+          <path d="M5 19V10M11 19V5M17 19v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M4 19h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <!-- Categorías -->
+        <svg *ngSwitchCase="'categorias'" viewBox="0 0 24 24" fill="none">
+          <path d="M4 6a1 1 0 0 1 1-1h4.4a1 1 0 0 1 .8.4l1.3 1.6H19a1 1 0 0 1 1 1V18a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <!-- Configuración -->
+        <svg *ngSwitchCase="'configuracion'" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="2.7" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M12 4.5v1.6M12 17.9v1.6M19.5 12h-1.6M6.1 12H4.5M17.3 6.7l-1.1 1.1M7.8 16.2l-1.1 1.1M17.3 17.3l-1.1-1.1M7.8 7.8 6.7 6.7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <span>{{ item.etiqueta }}</span>
+    </a>
+  </nav>
+
+  <button type="button" class="sidebar-logout" (click)="cerrarSesion()">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path d="M9 6.5V5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M13.5 12H4M4 12l3-3M4 12l3 3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span>Cerrar sesión</span>
+  </button>
+</aside>
