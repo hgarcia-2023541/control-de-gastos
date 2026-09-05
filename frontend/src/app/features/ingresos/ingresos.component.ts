@@ -5,6 +5,7 @@ import { SidebarComponent } from "../../shared/components/sidebar/sidebar.compon
 import { DonutChartComponent } from "../../shared/components/donut-chart/donut-chart.component";
 import { AuthService } from "../../core/services/auth.service";
 import { IngresosService } from "../../core/services/ingresos.service";
+import { PeriodoService } from '../../core/services/periodo.service'; 
 import {
   CATEGORIAS_INGRESO,
   FiltrosIngreso,
@@ -40,10 +41,11 @@ export class IngresosComponent implements OnInit {
   categoriasSugeridas = CATEGORIAS_INGRESO;
   fuentesSugeridas = FUENTES_SUGERIDAS;
 
-  // Selector de período (mismo patrón que el Dashboard)
-  periodos = ["Junio 2026", "Julio 2026", "Agosto 2026"];
-  periodoSeleccionado = signal(periodoActual());
-  mostrarSelectorPeriodo = signal(false);
+  // Selector de período COMPARTIDO con el Dashboard
+periodos = ["Junio 2026", "Julio 2026", "Agosto 2026", "Septiembre 2026", "Octubre 2026"];
+private periodoService = inject(PeriodoService); // <-- Inyectar el servicio
+periodoSeleccionado = this.periodoService.periodo; // <-- Usar el signal del servicio
+mostrarSelectorPeriodo = signal(false);
 
   // --- Datos ---
   ingresos = signal<Ingreso[]>([]);
@@ -125,37 +127,44 @@ export class IngresosComponent implements OnInit {
   }
 
   private cargarIngresos(): void {
-    this.cargando.set(true);
-    this.errorCarga.set(null);
+  this.cargando.set(true);
+  this.errorCarga.set(null);
 
-    const filtros: FiltrosIngreso = {
-      busqueda: this.busqueda() || undefined,
-      fechaInicio: this.fechaInicio() || undefined,
-      fechaFin: this.fechaFin() || undefined,
-      categoria: this.categoriaFiltro() || undefined,
-    };
+  const filtros: FiltrosIngreso = {
+    busqueda: this.busqueda() || undefined,
+    fechaInicio: this.fechaInicio() || undefined,
+    fechaFin: this.fechaFin() || undefined,
+    categoria: this.categoriaFiltro() || undefined,
+    // NO envíes periodo al backend
+  };
 
-    this.ingresosService.obtenerIngresos(filtros).subscribe({
-      next: (lista) => {
-        this.ingresos.set(lista);
-        this.cargando.set(false);
-      },
-      error: () => {
-        this.errorCarga.set("No se pudieron cargar tus ingresos. Intenta de nuevo en un momento.");
-        this.cargando.set(false);
-      },
-    });
-  }
+  this.ingresosService.obtenerIngresos(filtros).subscribe({
+    next: (lista) => {
+      // Filtrar localmente por período
+      const periodoActual = this.periodoSeleccionado();
+      const listaFiltrada = lista.filter(i => 
+        fechaEnPeriodo(i.fecha, periodoActual)
+      );
+      this.ingresos.set(listaFiltrada);
+      this.cargando.set(false);
+    },
+    error: (err: any) => {
+      this.errorCarga.set("No se pudieron cargar tus ingresos.");
+      this.cargando.set(false);
+    },
+  });
+}
 
   // ---------- Período ----------
   alternarSelectorPeriodo(): void {
     this.mostrarSelectorPeriodo.update((v) => !v);
   }
 
-  seleccionarPeriodo(periodo: string): void {
-    this.periodoSeleccionado.set(periodo);
-    this.mostrarSelectorPeriodo.set(false);
-  }
+seleccionarPeriodo(periodo: string): void {
+  this.periodoService.setPeriodo(periodo); // <-- Usar el servicio
+  this.mostrarSelectorPeriodo.set(false);
+  this.cargarIngresos(); // <-- Recargar datos con el nuevo período
+}
 
   // ---------- Filtros ----------
   onBusquedaCambiada(valor: string): void {

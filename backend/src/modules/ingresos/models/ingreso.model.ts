@@ -16,6 +16,7 @@ export interface FiltrosIngreso {
   fechaInicio?: string;
   fechaFin?: string;
   categoria?: string;
+  periodo?: string; // <-- AGREGAR ESTA LÍNEA
 }
 
 export interface DatosIngreso {
@@ -59,11 +60,33 @@ export async function listarIngresosPorUsuario(
     condiciones.push(`categoria = $${valores.length}`);
   }
 
+  if (filtros.periodo) {
+    // Asumiendo que el período viene como "Septiembre 2026"
+    // Necesitas parsearlo a mes/año
+    const [mes, anio] = filtros.periodo.split(' ');
+    const meses = {
+      'Enero': 1, 'Febrero': 2, 'Marzo': 3, 'Abril': 4,
+      'Mayo': 5, 'Junio': 6, 'Julio': 7, 'Agosto': 8,
+      'Septiembre': 9, 'Octubre': 10, 'Noviembre': 11, 'Diciembre': 12
+    };
+    const mesNumero = meses[mes as keyof typeof meses];
+    
+    if (mesNumero && anio) {
+      valores.push(anio);
+      valores.push(mesNumero);
+      const idxAnio = valores.length - 1;
+	const idxMes = valores.length;
+      condiciones.push(
+        `EXTRACT(YEAR FROM fecha) = $${idxAnio} AND EXTRACT(MONTH FROM fecha) = $${idxMes}`
+      );
+    }
+  }
+
   const resultado = await pool.query<Ingreso>(
     `SELECT id, usuario_id, descripcion, fuente, categoria, monto, fecha, creado_en
-     FROM ingresos
-     WHERE ${condiciones.join(" AND ")}
-     ORDER BY fecha DESC, creado_en DESC`,
+    FROM ingresos
+    WHERE ${condiciones.join(" AND ")}
+    ORDER BY fecha DESC, creado_en DESC`,
     valores
   );
 
