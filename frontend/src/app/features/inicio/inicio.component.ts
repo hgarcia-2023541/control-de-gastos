@@ -6,6 +6,7 @@ import { LineChartComponent } from "../../shared/components/line-chart/line-char
 import { DonutChartComponent } from "../../shared/components/donut-chart/donut-chart.component";
 import { AuthService } from "../../core/services/auth.service";
 import { DashboardService } from "../../core/services/dashboard.service";
+import { PeriodoService } from '../../core/services/periodo.service'; 
 import {
   CategoriaGasto,
   GastoReciente,
@@ -37,8 +38,9 @@ export class InicioComponent implements OnInit {
   // Selector de período: por ahora solo cambia qué "mes de demostración"
   // se pide al servicio. Cuando exista el backend real, este mismo
   // valor se mandaría como query param a la API (ver DashboardService).
-  periodos = ["Junio 2026", "Julio 2026", "Agosto 2026"];
-  periodoSeleccionado = signal(this.periodos[this.periodos.length - 1]);
+  periodos = ["Junio 2026", "Julio 2026", "Agosto 2026", "Septiembre 2026", "Octubre 2026"];
+  private periodoService = inject(PeriodoService); // <-- Inyectar el servicio
+  periodoSeleccionado = this.periodoService.periodo; // <-- Usar el signal del servicio
   mostrarSelectorPeriodo = signal(false);
 
   resumen = signal<ResumenFinanciero>({ ingresos: 0, gastos: 0 });
@@ -96,10 +98,10 @@ export class InicioComponent implements OnInit {
   }
 
   seleccionarPeriodo(periodo: string): void {
-    this.periodoSeleccionado.set(periodo);
-    this.mostrarSelectorPeriodo.set(false);
-    this.cargarDatos();
-  }
+  this.periodoService.setPeriodo(periodo); // <-- Usar el servicio
+  this.mostrarSelectorPeriodo.set(false);
+  this.cargarDatos(); // <-- Recargar datos con el nuevo período
+}
 
   formatoQuetzales(valor: number): string {
     return valor.toLocaleString("es-GT", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
